@@ -24,6 +24,7 @@ plugins {
   kotlin("kapt") version "1.4.10"
   id("org.jetbrains.dokka") version "1.4.10"
   id("com.vanniktech.maven.publish") version "0.13.0"
+  id("com.jfrog.bintray") version "1.8.5"
 }
 
 buildscript {
@@ -127,3 +128,21 @@ dependencies {
   testImplementation("com.google.truth:truth:1.0.1")
   testImplementation("junit:junit:4.13")
 }
+
+mavenPublish {
+  releaseSigningEnabled = false
+}
+
+extensions.configure<com.jfrog.bintray.gradle.BintrayExtension>("bintray") {
+    user = "${project.findProperty("bintray.user") ?: System.getenv("BINTRAY_USER")}"
+    key = "${project.findProperty("bintray.apikey") ?: System.getenv("BINTRAY_API_KEY")}"
+
+    setPublications("pluginMaven")
+
+    pkg.apply {
+        repo = "maven"
+        name = "keeper"
+        publish = true
+    }
+}
+
